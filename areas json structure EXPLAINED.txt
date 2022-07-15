@@ -1,0 +1,86 @@
+#Structure of "areas" field in the SCL *.geojson object
+
+
+#the *.geojson structure has for each geometry fields for id, lsid, lscountry, lscountry_area, and areas
+
+#the part of a landscape within a country is key'd by "id"
+#the landscape identifier, noting that landscapes can be shared across multiple countries, is "lsid"
+#the name of the country is "lscountry"
+#the area of the landscape within a country in km2 is "lscountry_area"
+
+#"areas" holds a nested json string which describes a geographic intersection of a part of a landscape within a country with information about biome, kba, and pa.
+
+#	kba = Key Biodiversity Area (as defined by KBA Authority)
+#	biome = Biomes (as defined in Dinerstein et al. (2018))
+#	pa = Protected Area (as defined by WDPA)
+
+#here is an example, the first row in ..\2020-01-01\scl_species.geojson for tigers, for example
+
+id = "00000000000000000012_000000000000000000e9"
+lsid =  19
+country =  "ID" # Indonesia
+area:  3717.9   # km2
+
+areas =
+
+[ { "biomeid": 1, "biomename": "Tropical & Subtropical Moist Broadleaf Forests", "kba_area": 956.60000000000002, "kbas": [ { "kbaarea": 956.60000000000002, "kbaid": 15812, "kbaname": "Kerumutan" } ], "nonkba_area": 2753.3000000000002, "pas": [ { "paarea": 926.80000000000007, "paid": 1259, "paname": "Kerumutan" } ], "protected": 926.80000000000007, "unprotected": 2783.1000000000004 }, { "biomeid": 14, "biomename": "Mangroves", "kba_area": 0.0, "kbas": [ ], "nonkba_area": 7.8000000000000007, "pas": [ ], "protected": 0.0, "unprotected": 7.8000000000000007 } ]
+
+#To make this more readable, I added in some separate lines and some notes
+
+[ # within this particular examples, we have two json objects
+	{ 	
+		"biomeid": 1, # biome id
+		"biomename": "Tropical & Subtropical Moist Broadleaf Forests", # biome name
+		"kba_area": 956.60000000000002, # area of kbas in km2
+		"kbas": 
+		[ # an array of the kbas within biomeid = 1
+			{ 
+			"kbaarea": 956.60000000000002, 	# area of this specific kba in this biome in km2
+			"kbaid": 15812, 				# id of kba
+			"kbaname": "Kerumutan"          # name of the kba
+			} 
+		],
+		"nonkba_area": 2753.3000000000002,  # area of landscape in a country not in KBA
+		"pas": 
+		[ 
+			{ 	
+				"paarea": 926.80000000000007, # area of pa, km2 (similar to but not identical to kba)
+				"paid": 1259,                 # WDPA id of pa
+				"paname": "Kerumutan"         # name of PA
+			} 
+		], 
+		"protected": 926.80000000000007, 
+		"unprotected": 2783.1000000000004 
+	}, 
+			
+	{ 	
+		"biomeid": 14, 
+		"biomename": "Mangroves", 
+		"kba_area": 0.0, 
+		"kbas": [ ], 
+		"nonkba_area": 7.8000000000000007, 
+		"pas": [ ], 
+		"protected": 0.0, 
+		"unprotected": 7.8000000000000007 
+	} 
+]
+
+#Note that 
+#   kba_area + nonkba_area = 956.6 + 2753.3 = 3709.9
+#   protected + unprotected = 926.8 + 2783.1 = 3709.9
+#   so the implicit "biome_area" for biomeid 1 is 3709.9
+#
+#   similarly for biome 2, "biome_area" = 7.8
+#
+#   which means if you add up the areas of biome 1 and biome 2 you get the total area of the landscape within the country
+#   biome 1 + biome 2 = 3709.9 + 7.8 = 3717.7 (plus or minus a bit...)
+
+
+# To summarize this particular instance
+# For TCL = 19, in Indonesia, 99.7% of the area is Tropical & Subtropical Moist Broadleaf Forests" and 0.2% "Mangroves"
+# The tropical forest portion has one KBA "Kermutan", which is also a protected area, i.e. Kermutan Forest Reserve
+# https://www.indonesia.travel/gb/en/destinations/sumatra/pelalawan/kerumutan-forest-reserve
+
+# id, lsid, ls_country, 
+
+ 
