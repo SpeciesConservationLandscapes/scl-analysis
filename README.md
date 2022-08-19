@@ -14,6 +14,8 @@ SCL scripts:
 
 **scl_analyze_areas_biomes.py**: reach into the nested "areas" field and pull out and summarize area of biome information for each landscape
 
+**scl_analyze_ls_by_country.py:**  read attributes of all landscape types (which had previously been merged) and create pivot tables by country to calculate areas per country and counts of landscapes (or portions of landscapes) in each country, for each type of landscape
+
 Indigenous range scripts:
 
 Run these first three in the order listed:
