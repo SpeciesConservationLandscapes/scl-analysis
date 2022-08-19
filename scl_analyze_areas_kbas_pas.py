@@ -1,4 +1,5 @@
 # scl_analysis.5.py
+# scl_analyze_areas_kbas_pas.py
 # ews 7/14/2022
 
 # Read object and summarize the nested JSON in the "areas" field of the SCL output format

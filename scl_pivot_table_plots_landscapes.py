@@ -47,11 +47,14 @@ with open(initial_file, 'r') as csv_file:
     line_count = 0
     for row in csv_reader:
         if line_count == 0:
+            data_type = row[1]
+            print (data_type)
+        if line_count == 1:
             #get field names into a list then start building pivot_dict to hold data
             print(f'Field names are {", ".join(row)}')
             fields_list = row
             line_count += 1
-        else:
+        elif line_count > 1:
             geo_name = row[0]
             geo_names_list.append(geo_name)
             #print(f'{", ".join(row)}')
