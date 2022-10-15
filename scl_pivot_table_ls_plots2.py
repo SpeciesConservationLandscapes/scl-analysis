@@ -29,7 +29,7 @@ import math
 # data files organized by folder by time point are in this directory:
 scl_dir = r"C:\proj\species\tigers\TCLs v3\TCL delineation\scl_stats_09142022"
 # subdirectory for pivot tables outputs
-pivot_subdir = "pivot_tables\habitat_areas"
+pivot_subdir = "pivot_tables\landscape_areas"
 # figure subdirectory
 fig_subdir = "pivot_tables\plots"
 # example data file
@@ -46,8 +46,8 @@ countries = ['Afghanistan','Armenia','Arunachal Pradesh','Azad Kashmir','Azerbai
 # a single country for testing purposes
 #countries = ['Afghanistan']
 
-# habitat types to analyze are:
-types = ['indigenous_range_area','str_hab_area','eff_pot_hab_area','occupied_eff_pot_hab_area']
+# landscape types to analyze are:
+types = ['scl_restoration','scl_restoration_fragment','scl_species','scl_species_fragment','scl_survey','scl_survey_fragment']
 # a single habitat type for testing purposes
 #types = ['indigenous_range_area']
 
@@ -79,18 +79,24 @@ for time in timepoints:
     time_list = time.split("-")
     year = int(time_list[0])
     # put together filename and load up
-    csvfilename = "hab_pivot." + time + ".csv"
-    df = pd.read_csv(os.path.join(scl_dir, pivot_subdir, csvfilename))
+    csvfilename = "ls_pivot." + time + ".csv"
+    df = pd.read_csv(os.path.join(scl_dir, pivot_subdir, csvfilename), header=1)
+    for col in df.columns:
+        print(col)
+        
     # set index of country names
-    df.set_index('countrynam', inplace=True)
+    df.set_index('country', inplace=True)
     #print(df.head())
     # convert to dictionary
     hab_dict = df.to_dict('index')
     # loop over the keys to hab_dict, which are countries, and create lists for each of the data types
     for country in hab_dict.keys():
        for type in hab_dict[country].keys():   # these are the data types
-          #print("Working on ", country, type, year)
-          data_dict[country][type][year] = hab_dict[country][type]
+          try:
+             print("Working on ", country, type, year)
+             data_dict[country][type][year] = hab_dict[country][type]
+          except:
+             print("Skipping with ", country, type, year)
 
 # export that dictionary for further analysis
 # thank you to https://stackoverflow.com/questions/24988131/nested-dictionary-to-multiindex-dataframe-where-dictionary-keys-are-column-label
@@ -98,10 +104,10 @@ df_unstacked = pd.DataFrame.from_dict(data_dict, orient="index").stack().to_fram
 df_restacked = pd.DataFrame(df_unstacked[0].values.tolist(), index=df_unstacked.index)
 df_transposed = pd.DataFrame.transpose(df_restacked)
 
-for col in df_transposed.columns:
-    print(col)
+#for col in df_transposed.columns:
+#    print(col)
 
-csvfilename = "habitat_country_pivot.all_years.csv"
+csvfilename = "ls_country_pivot.all_years.csv"
 df_transposed.to_csv(os.path.join(scl_dir, pivot_subdir, csvfilename))
 
 

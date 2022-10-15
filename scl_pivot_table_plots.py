@@ -19,15 +19,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import csv
 
-# some set up
-#pivot_dir = r"C:\proj\species\tigers\TCLs v3\TCL delineation\scl_stats_07032022\analysis\pivot_tables\states"
-#initial_pivot_filename = "scl_states.2020-01-01.csv"
-#figure_dir = r'C:\proj\species\tigers\TCLs v3\TCL delineation\scl_stats_07032022\analysis\pivot_tables\states_plots'
+# some set up for habitat
+pivot_dir = r"C:\proj\species\tigers\TCLs v3\TCL delineation\scl_stats_07032022\analysis\pivot_tables\states"
+initial_pivot_filename = "scl_states.2020-01-01.csv"
+figure_dir = r'C:\proj\species\tigers\TCLs v3\TCL delineation\scl_stats_07032022\analysis\pivot_tables\states_plots'
 
-# alternative set up
-pivot_dir = r"C:\proj\species\tigers\TCLs v3\TCL delineation\scl_stats_07032022\analysis - all 20 years\pivot_tables\landscapes"
-initial_pivot_filename = "scl_ALL_areas_counts.2020_01_01.csv"
-figure_dir = r"C:\proj\species\tigers\TCLs v3\TCL delineation\scl_stats_07032022\analysis - all 20 years\pivot_tables\landscapes"
+# alternative set up for landscapes
+#pivot_dir = r"C:\proj\species\tigers\TCLs v3\TCL delineation\scl_stats_07032022\analysis - all 20 years\pivot_tables\landscapes"
+#initial_pivot_filename = "scl_ALL_areas_counts.2020_01_01.csv"
+#figure_dir = r"C:\proj\species\tigers\TCLs v3\TCL delineation\scl_stats_07032022\analysis - all 20 years\pivot_tables\landscapes"
 
 # loop through all the filenames to get the list of times
 times_list = []
@@ -53,10 +53,10 @@ with open(initial_file, 'r') as csv_file:
             line_count += 1
         else:
             geo_name = row[0]
-            geo_names_list.append(geo_name)
+            geo_names_list.append(geo_name) # get list of all geographies (e.g. countries and disputed areas)
             #print(f'{", ".join(row)}')
 
-# drop field name for geography
+# drop "countryname" from list of fields
 fields_list.pop(0)
 
 # initialize pivot dictionary based on those lists
@@ -82,10 +82,10 @@ for filename in os.listdir(pivot_dir):
                 line_count += 1
             else:
                 geo = row[0]
-                pivot_dict[geo][time][fields_list[0]] = int(float(row[1]))
-                pivot_dict[geo][time][fields_list[1]] = int(float(row[2]))
-                pivot_dict[geo][time][fields_list[2]] = int(float(row[3]))
-                pivot_dict[geo][time][fields_list[3]] = int(float(row[4]))
+                pivot_dict[geo][time][fields_list[0]] = int(float(row[1]))  # area of indigenous range
+                pivot_dict[geo][time][fields_list[1]] = int(float(row[2]))  # area of structural habitat
+                pivot_dict[geo][time][fields_list[2]] = int(float(row[3]))  # area of effective potential habitat
+                pivot_dict[geo][time][fields_list[3]] = int(float(row[4]))  # area of occupied effective potential habitat
 
 #print (times_list)
 #print (geo_names_list)
@@ -121,7 +121,7 @@ for geo in geo_names_list:
                 #print (time, pivot_dict[geo][time][fields_list[0]])
             plt.plot(years_list, areas_list, colors[a], label = labels[a])
         plt.legend()
-        plt.xticks(rotation = 90) # Rotates X-Axis Ticks
+        plt.xticks(rotation = 90) # rotates X-Axis Ticks
         plt.title(geo)
        # plt.show()
         fig.savefig(os.path.join(figure_dir, figure_filename))
